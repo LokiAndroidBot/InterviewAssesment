@@ -4,7 +4,7 @@ import android.util.Log
 import com.indalph.interviewassessment.Logger.PRINT_HEADER
 import kotlin.random.Random
 
-fun dataTypeSize() {
+fun dataTypeSize(): String {
     Log.e(
         PRINT_HEADER,
         "Byte Size is ${Byte.SIZE_BITS} Min is ${Byte.MIN_VALUE}  Max is ${Byte.MAX_VALUE}"
@@ -31,6 +31,7 @@ fun dataTypeSize() {
         PRINT_HEADER,
         "Char Size is ${Char.SIZE_BITS} Min is ${Char.MIN_VALUE}  Max is ${Char.MAX_VALUE}"
     )
+    return "https://pl.kotl.in/6broB_6Bn"
 }
 
 
@@ -102,7 +103,6 @@ fun doMutableImmutableList() {
     //l2.add(4)
     Log.e(PRINT_HEADER, l2.toString())
 }
-
 
 
 fun doNullable() {

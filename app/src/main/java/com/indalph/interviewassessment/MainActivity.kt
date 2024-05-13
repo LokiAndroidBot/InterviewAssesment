@@ -1,12 +1,16 @@
 package com.indalph.interviewassessment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.ViewGroup
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,13 +23,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.indalph.interviewassessment.ui.theme.InterviewAssessmentTheme
-import kotlin.reflect.full.*
-import kotlin.reflect.KFunction
-import kotlin.reflect.jvm.javaMethod
-import kotlin.reflect.jvm.reflect
 
 
 class MainActivity : ComponentActivity() {
@@ -46,39 +48,52 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    // Define a list of TaskList items
-    val taskListItems = TaskList.entries
-    var text by remember { mutableStateOf("") }
+    val taskListItems = remember { TaskList.entries }
+    var selectedUrl by remember { mutableStateOf("https://pl.kotl.in/6broB_6Bn") }
 
-    LazyColumn(modifier = modifier.fillMaxHeight(0.7f)) {
-        items(taskListItems) { taskListItem ->
-            Box(Modifier.clickable { text = doWork(taskListItem) }) {
-                Text(text = taskListItem.name, modifier = Modifier.padding(16.dp))
+    Column(modifier = modifier.fillMaxSize(1f)) {
+        LazyColumn(modifier = modifier.weight(0.5f)) {
+            items(taskListItems) { taskListItem ->
+                Box(Modifier.clickable {
+                    selectedUrl = doWork(taskListItem)
+                }) {
+                    Text(text = taskListItem.name, modifier = Modifier.padding(16.dp))
+                }
             }
         }
+        Column(modifier = modifier.weight(0.5f)) {
+            WebViewExample(selectedUrl)
+        }
+
     }
-    Text(modifier = Modifier.fillMaxHeight(0.3f), text = text)
+}
+
+@SuppressLint("SetJavaScriptEnabled")
+@Composable
+fun WebViewExample(url: String) {
+    val context = LocalContext.current
+    val webView = remember {
+        WebView(context).apply {
+            settings.javaScriptEnabled = true
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+            )
+            webViewClient = WebViewClient()
+        }
+    }
+
+    AndroidView({ webView }) { webView ->
+        webView.loadUrl(url)
+    }
 }
 
 enum class TaskList {
     DATATYPE_SIZE, LAZY, LATE_INIT, DOUBLE_BANG_OPERATOR, NULLABLE_OPERATOR, ELVIS_OPERATOR, ANY_TYPE, MUTABLE_IMMUTABLE, MUTABLE_IMMUTABLE_LIST, STRING_REVERSE, CHAR_OCCURRENCE, DATA_CLASS, ENUM_CLASS, NESTED_CLASS, INNER_CLASS, SINGLETON_CLASS, INIT_BLOCK, EQUALITY_CHECK, GENERIC, GENERIC_EXTENSION, INFIX_FUNCTION, INLINE_FUNCTION
 }
 
-/*fun generateFunctionCode(function: () -> Unit): String {
-
-    val funSpec = FunSpec.builder(functionName.)
-        .addCode("println(\"This is an example function.\")") // You can add any custom code here
-        .build()
-
-    val fileSpec =
-        FileSpec.builder("generated", functionName.toString()).addFunction(funSpec).build()
-
-    return fileSpec.toString()
-}*/
 fun doWork(data: TaskList): String {
-
-    return ""/*return when (data) {
-        TaskList.DATATYPE_SIZE -> generateFunctionCode { ::dataTypeSize } TaskList.LAZY -> doLazy()
+    return return when (data) {
+        TaskList.DATATYPE_SIZE -> dataTypeSize()/*TaskList.LAZY -> doLazy()
         TaskList.LATE_INIT -> doLateInit()
         TaskList.DOUBLE_BANG_OPERATOR -> doDoubleBang()
         TaskList.NULLABLE_OPERATOR -> doNullable()
@@ -98,9 +113,9 @@ fun doWork(data: TaskList): String {
         TaskList.GENERIC -> doGeneric()
         TaskList.GENERIC_EXTENSION -> "".doGenericExtension("Loki")
         TaskList.INFIX_FUNCTION -> doInfix()
-        TaskList.INLINE_FUNCTION -> doInline()
+        TaskList.INLINE_FUNCTION -> doInline()*/
         else -> ""
-    }*/
+    }
 }
 
 @Preview(showBackground = true)
