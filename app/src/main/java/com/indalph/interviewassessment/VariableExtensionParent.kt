@@ -35,7 +35,7 @@ fun dataTypeSize(): String {
 }
 
 
-fun doLazy() {
+fun doLazy(): String {
     val myLazyProperty: String by lazy {
         Log.e(PRINT_HEADER, "Initializing the variable")
         "Hello, World!"
@@ -43,6 +43,7 @@ fun doLazy() {
 
     Log.e(PRINT_HEADER, myLazyProperty) // "Initializing..." and "Hello, World!"
     Log.e(PRINT_HEADER, myLazyProperty) // "Hello, World!" (already initialized)
+    return "https://pl.kotl.in/6broB_6Bn"
 }
 
 fun doLateInit() {

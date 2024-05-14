@@ -10,22 +10,22 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.indalph.interviewassessment.ui.theme.InterviewAssessmentTheme
 
@@ -37,8 +37,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             InterviewAssessmentTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android", modifier = Modifier.padding(innerPadding)
+                    MyScreen(
+                        modifier = Modifier.padding(innerPadding)
                     )
                 }
             }
@@ -47,25 +47,72 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    val taskListItems = remember { TaskList.entries }
-    var selectedUrl by remember { mutableStateOf("https://pl.kotl.in/6broB_6Bn") }
+fun MyScreen(modifier: Modifier) {
+    val parentList = getParent()
+    val childMap = remember {
+        parentList.associateWith { parent ->
+            when (parent) {
+                "Variables", "Class", "String" -> child()
+                else -> emptyList()
+            }
+        }
+    }
+    val expandedParent = remember { mutableMapOf<String, Boolean>() }
+    val expandedChild = remember { mutableMapOf<String, Boolean>() }
 
-    Column(modifier = modifier.fillMaxSize(1f)) {
-        LazyColumn(modifier = modifier.weight(0.5f)) {
-            items(taskListItems) { taskListItem ->
-                Box(Modifier.clickable {
-                    selectedUrl = doWork(taskListItem)
+    LazyColumn(modifier = modifier.padding(20.dp)) {
+        items(parentList) { parent ->
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    expandedParent[parent] = !(expandedParent[parent] ?: false)
                 }) {
-                    Text(text = taskListItem.name, modifier = Modifier.padding(16.dp))
+                Text(
+                    text = parent,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+
+            if (expandedParent[parent] == true) {
+                childMap[parent]?.forEach { childResult ->
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 32.dp)
+                        .clickable {
+                            expandedChild[childResult.message] =
+                                !(expandedChild[childResult.message] ?: false)
+                        }) {
+                        Text(
+                            text = childResult.message, modifier = Modifier.padding(8.dp)
+                        )
+                    }
+
+                    if (expandedChild[childResult.message] == true) {
+                        Button(
+                            onClick = childResult.function,
+                            modifier = Modifier.padding(start = 64.dp)
+                        ) {
+                            Text("Run")
+                        }
+                    }
                 }
             }
         }
-        Column(modifier = modifier.weight(0.5f)) {
-            WebViewExample(selectedUrl)
-        }
-
     }
+}
+
+fun getParent(): List<String> = listOf("Variables", "Class", "String")
+
+fun child(): List<Result> = listOf(
+    Result.Data("Variables", "DataType", ::dataTypeSize),
+    Result.Data("Class", "DoLazy", ::doLazy),
+    Result.Data("String", "DoLazy", ::dataTypeSize)
+)
+
+sealed class Result {
+    data class Data(val parent: String, val message: String, val function: () -> Unit) : Result()
 }
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -87,41 +134,24 @@ fun WebViewExample(url: String) {
     }
 }
 
+
 enum class TaskList {
     DATATYPE_SIZE, LAZY, LATE_INIT, DOUBLE_BANG_OPERATOR, NULLABLE_OPERATOR, ELVIS_OPERATOR, ANY_TYPE, MUTABLE_IMMUTABLE, MUTABLE_IMMUTABLE_LIST, STRING_REVERSE, CHAR_OCCURRENCE, DATA_CLASS, ENUM_CLASS, NESTED_CLASS, INNER_CLASS, SINGLETON_CLASS, INIT_BLOCK, EQUALITY_CHECK, GENERIC, GENERIC_EXTENSION, INFIX_FUNCTION, INLINE_FUNCTION
 }
 
 fun doWork(data: TaskList): String {
-    return return when (data) {
-        TaskList.DATATYPE_SIZE -> dataTypeSize()/*TaskList.LAZY -> doLazy()
-        TaskList.LATE_INIT -> doLateInit()
-        TaskList.DOUBLE_BANG_OPERATOR -> doDoubleBang()
-        TaskList.NULLABLE_OPERATOR -> doNullable()
-        TaskList.ELVIS_OPERATOR -> doElvis()
-        TaskList.ANY_TYPE -> doAnyType()
-        TaskList.MUTABLE_IMMUTABLE -> doMutableImmutable()
-        TaskList.MUTABLE_IMMUTABLE_LIST -> doMutableImmutableList()
-        TaskList.STRING_REVERSE -> doStringReverse()
-        TaskList.CHAR_OCCURRENCE -> doFindRepeatedCharacterOccurrence()
-        TaskList.INIT_BLOCK -> doInitBlock()
-        TaskList.DATA_CLASS -> doDataClass()
-        TaskList.ENUM_CLASS -> doEnumClass()
-        TaskList.NESTED_CLASS -> doNestedClass()
-        TaskList.INNER_CLASS -> doInnerClass()
-        TaskList.SINGLETON_CLASS -> doSingletonClass()
-        TaskList.EQUALITY_CHECK -> doEqualsOperator()
-        TaskList.GENERIC -> doGeneric()
-        TaskList.GENERIC_EXTENSION -> "".doGenericExtension("Loki")
-        TaskList.INFIX_FUNCTION -> doInfix()
-        TaskList.INLINE_FUNCTION -> doInline()*/
+    return when (data) {
+        TaskList.DATATYPE_SIZE -> dataTypeSize()
+        TaskList.LAZY -> doLazy()
         else -> ""
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     InterviewAssessmentTheme {
-        Greeting("Android")
+        MyScreen(modifier = Modifier.fillMaxSize())
     }
 }

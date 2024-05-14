@@ -11,6 +11,8 @@ composeBom = "2024.05.00"
 
 kotlinJdk = "1.9.24"
 kotlinReflect = "1.9.24"
+material3Android = "1.2.1"
+constraintlayout = "2.1.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -31,6 +33,8 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 
 kotlinReflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect",version.ref = "kotlinReflect"  }
 kotlinJDK = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8",version.ref = "kotlinJdk"  }
+androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
 
 
