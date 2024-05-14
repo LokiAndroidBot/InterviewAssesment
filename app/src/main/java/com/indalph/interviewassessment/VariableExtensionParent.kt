@@ -34,6 +34,20 @@ fun dataTypeSize(): String {
     return "https://pl.kotl.in/6broB_6Bn"
 }
 
+fun doVariable(): String {
+
+    var name = "John"
+    val birthyear = 1975
+
+    println(name)          // Print the value of name
+    println(birthyear)     // Print the value of birthyear
+
+    //const var gfgName = "Geeksforgeeks"
+    //Error -> Modifier 'const' is not applicable to 'vars'
+    //Error -> Modifier 'const' is not applicable to 'local variable'
+
+    return "https://pl.kotl.in/edPnVp0fz"
+}
 
 fun doLazy(): String {
     val myLazyProperty: String by lazy {
