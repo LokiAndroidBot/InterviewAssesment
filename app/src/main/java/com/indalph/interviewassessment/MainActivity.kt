@@ -18,8 +18,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -47,8 +50,6 @@ class MainActivity : ComponentActivity() {
 }
 
 
-
-
 enum class ParentList {
     VARIABLES, CLASS, STRING
 }
@@ -56,23 +57,28 @@ enum class ParentList {
 fun getParent(): List<String> =
     listOf(ParentList.VARIABLES.name, ParentList.CLASS.name, ParentList.STRING.name)
 
-data class Data(val parent: String, val message: String, val function: () -> Unit)
+data class Data(val parent: String, val message: String, val function: () -> String)
 
 fun getVariablesList() = listOf(
-    Data(ParentList.VARIABLES.name, "DataType", ::dataTypeSize),
+    Data(ParentList.VARIABLES.name, "Data Type Size", ::dataTypeSize),
+    Data(ParentList.VARIABLES.name, "Variable Type", ::doVariableType),
+    Data(ParentList.VARIABLES.name, "Lazy (by lazy{})", ::doLazy),
+    Data(ParentList.VARIABLES.name, "Late Init", ::doLateInit),
+    Data(ParentList.VARIABLES.name, "Nullable", ::doNullable),
+    Data(ParentList.VARIABLES.name, "Safe Call (?.)", ::doSafeCall),
+    Data(ParentList.VARIABLES.name, "Elvis Operator (?:)", ::doElvis),
+    Data(ParentList.VARIABLES.name, "Double Bang (!!)", ::doDoubleBang),
+    Data(ParentList.VARIABLES.name, "by keyword", ::doBy),
 )
 
 fun getClassList() = listOf(
-    Data(ParentList.CLASS.name, "DoLazy", ::dataTypeSize),
-
-
-
-    )
+    Data(ParentList.CLASS.name, "DoLazy", ::dataTypeSize)
+)
 
 fun getStringList() = listOf(
     Data(ParentList.STRING.name, "DoLazy", ::dataTypeSize),
 
-)
+    )
 
 fun child(): List<Data> {
     val mutableChild = mutableListOf<Data>()
@@ -88,11 +94,12 @@ fun ExpandableList(modifier: Modifier) {
     val parentItems = remember { getParent() }
     val childItems = remember { child() }
     val expandedState = remember { mutableStateMapOf<String, Boolean>() }
-    Box(modifier = modifier) {
+    var selectedURL by remember { mutableStateOf("https://www.google.com") }
+    Column(modifier = modifier) {
+
         Column(
             modifier = Modifier
-                .fillMaxSize()
-
+                .weight(1f)
                 .padding(top = 20.dp, bottom = 20.dp)
 
         ) {
@@ -120,18 +127,31 @@ fun ExpandableList(modifier: Modifier) {
                                 .padding(start = 32.dp)
                         ) {
                             children.forEach { child ->
-                                Text(
-                                    text = child.message,
-                                    modifier = Modifier.padding(vertical = 4.dp)
-                                )
+                                Box(modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        selectedURL = child.function.invoke()
+                                    }) {
+                                    Text(
+                                        text = child.message,
+                                        modifier = Modifier.padding(vertical = 4.dp)
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
         }
-    }
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .padding(top = 20.dp, bottom = 20.dp)
 
+        ) {
+            WebViewExample(selectedURL)
+        }
+    }
 }
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -152,20 +172,6 @@ fun WebViewExample(url: String) {
         webView.loadUrl(url)
     }
 }
-
-
-enum class TaskList {
-    DATATYPE_SIZE, LAZY, LATE_INIT, DOUBLE_BANG_OPERATOR, NULLABLE_OPERATOR, ELVIS_OPERATOR, ANY_TYPE, MUTABLE_IMMUTABLE, MUTABLE_IMMUTABLE_LIST, STRING_REVERSE, CHAR_OCCURRENCE, DATA_CLASS, ENUM_CLASS, NESTED_CLASS, INNER_CLASS, SINGLETON_CLASS, INIT_BLOCK, EQUALITY_CHECK, GENERIC, GENERIC_EXTENSION, INFIX_FUNCTION, INLINE_FUNCTION
-}
-
-fun doWork(data: TaskList): String {
-    return when (data) {
-        TaskList.DATATYPE_SIZE -> dataTypeSize()
-        TaskList.LAZY -> doLazy()
-        else -> ""
-    }
-}
-
 
 @Preview(showBackground = true)
 @Composable

@@ -31,10 +31,10 @@ fun dataTypeSize(): String {
         PRINT_HEADER,
         "Char Size is ${Char.SIZE_BITS} Min is ${Char.MIN_VALUE}  Max is ${Char.MAX_VALUE}"
     )
-    return "https://pl.kotl.in/6broB_6Bn"
+    return "https://pl.kotl.in/xYo5zc4UI"
 }
 
-fun doVariable(): String {
+fun doVariableType(): String {
 
     var name = "John"
     val birthyear = 1975
@@ -46,7 +46,18 @@ fun doVariable(): String {
     //Error -> Modifier 'const' is not applicable to 'vars'
     //Error -> Modifier 'const' is not applicable to 'local variable'
 
-    return "https://pl.kotl.in/edPnVp0fz"
+    var nameNew = "Virat"
+    nameNew = "Kohli"
+    println(nameNew)
+    //The above example is used by mutable variable. We can change the value of a variable in RunTime.
+
+
+    val lastName = "Virat"
+    //lastName = "Kohli"
+    println(lastName)
+
+    //Val cannot be reassigned
+    return "https://pl.kotl.in/HjOVR7TQc"
 }
 
 fun doLazy(): String {
@@ -57,10 +68,10 @@ fun doLazy(): String {
 
     Log.e(PRINT_HEADER, myLazyProperty) // "Initializing..." and "Hello, World!"
     Log.e(PRINT_HEADER, myLazyProperty) // "Hello, World!" (already initialized)
-    return "https://pl.kotl.in/6broB_6Bn"
+    return "https://pl.kotl.in/aHKjtsNk4"
 }
 
-fun doLateInit() {
+fun doLateInit(): String {
     lateinit var myVariable: String
 
     myVariable = ""
@@ -77,13 +88,44 @@ fun doLateInit() {
 
     // Check using isInitialized method
     Log.e(PRINT_HEADER, "Is myVariable initialized? " + myVariable.isBlank())
+
+    return "https://pl.kotl.in/cHOQyzMVC"
 }
 
-fun doDoubleBang() {
+fun doNullable(): String {
+    val name: String? = null
+    val length = name?.length
+    Log.e(PRINT_HEADER, length.toString())
+    return "https://pl.kotl.in/bWwWiaQas"
+}
+
+fun doSafeCall(): String {
+    var name: String? = null
+    println(name?.length)
+    return "https://pl.kotl.in/Ed9oa9xv-"
+}
+
+fun doElvis(): String {
+    val name: String? = null
+    val length = name?.length ?: 5
+    Log.e(PRINT_HEADER, length.toString())
+    return "https://pl.kotl.in/QF95peBO1"
+}
+
+fun doDoubleBang(): String {
     val name: String? = null
     Log.e(PRINT_HEADER, name.toString())
     val length = name!!.length
+    return "https://pl.kotl.in/4Xkm6gcgl"
 }
+
+fun doBy(): String {
+    val name: String? = null
+    Log.e(PRINT_HEADER, name.toString())
+    val length = name!!.length
+    return "https://pl.kotl.in/4Xkm6gcgl"
+}
+
 
 fun doMutableImmutable() {
     var name = "Virat"
@@ -119,18 +161,6 @@ fun doMutableImmutableList() {
     Log.e(PRINT_HEADER, l2.toString())
 }
 
-
-fun doNullable() {
-    val name: String? = null
-    val length = name?.length
-    Log.e(PRINT_HEADER, length.toString())
-}
-
-fun doElvis() {
-    val name: String? = null
-    val length = name?.length ?: 5
-    Log.e(PRINT_HEADER, length.toString())
-}
 
 fun doAnyType(): Any {
     var a: Any

@@ -3,11 +3,11 @@
   <component name="deploymentTargetSelector">
     <selectionStates>
       <SelectionState runConfigName="app">
-        <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-05-13T07:37:59.092277Z">
+        <option name="selectionMode" value="DIALOG" />
+        <DropdownSelection timestamp="2024-05-15T03:31:20.194776Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/loki/.android/avd/Pixel_8_Pro_API.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/loki/.android/avd/Pixel_8.avd" />
             </handle>
           </Target>
         </DropdownSelection>
@@ -16,6 +16,11 @@
             <Target type="DEFAULT_BOOT">
               <handle>
                 <DeviceId pluginId="LocalEmulator" identifier="path=/Users/loki/.android/avd/Pixel_8.avd" />
+              </handle>
+            </Target>
+            <Target type="DEFAULT_BOOT">
+              <handle>
+                <DeviceId pluginId="PhysicalDevice" identifier="serial=830310ba" />
               </handle>
             </Target>
           </targets>
