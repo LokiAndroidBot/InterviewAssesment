@@ -1,12 +1,19 @@
-package com.indalph.interviewassessment
+package com.indalph.interviewassessment.parent
 
-import android.util.Log
-import com.indalph.interviewassessment.Logger.PRINT_HEADER
+import com.indalph.interviewassessment.CardType
+import com.indalph.interviewassessment.CardTypeNew
+import com.indalph.interviewassessment.CardTypeNew1
+import com.indalph.interviewassessment.Outer
+import com.indalph.interviewassessment.Outer2
+import com.indalph.interviewassessment.Person
+import com.indalph.interviewassessment.PersonV2
+import com.indalph.interviewassessment.SINGLETON
+import com.indalph.interviewassessment.Student
+import com.indalph.interviewassessment.Student1
+import com.indalph.interviewassessment.println
 import java.time.LocalDate
 import kotlin.math.pow
 import kotlin.system.measureNanoTime
-
-class ClassExtensionParent
 
 fun doInitBlock() {
     val person = Person("Loki")
@@ -15,40 +22,40 @@ fun doInitBlock() {
 fun doDataClass() {
     val p1 = PersonV2("Amanda", "Smith").also { it.dateOfBirth = LocalDate.of(1992, 8, 8) }
     val p2 = PersonV2("Amanda", "Smith").also { it.dateOfBirth = LocalDate.of(1976, 11, 18) }
-    Log.e(PRINT_HEADER, (p1 == p2).toString())
+    println((p1 == p2))
 }
 
 fun doEnumClass() {
-    Log.e(PRINT_HEADER, CardType.SILVER.toString())
-    Log.e(PRINT_HEADER, CardTypeNew.SILVER.color)
-    Log.e(PRINT_HEADER, CardTypeNew1.SILVER.calculateCashbackPercent().toString())
+    println(CardType.SILVER)
+    println(CardTypeNew.SILVER.color)
+    println(CardTypeNew1.SILVER.calculateCashbackPercent())
 }
 
 fun doNestedClass() {
-    Log.e(PRINT_HEADER, Outer.NestedClass().printSomething())
+    println(Outer.NestedClass().printSomething())
 }
 
 fun doInnerClass() {
-    Log.e(PRINT_HEADER, Outer2().InnerClass().printSomething().toString())
+    println(Outer2().InnerClass().printSomething().toString())
 }
 
 fun doSingletonClass() {
-    Log.e(PRINT_HEADER, SINGLETON.printName)
+    println(SINGLETON.printName)
 }
 
 fun <T> T.doGenericExtension(s: T): String {
     val returnData = this.toString() + s.toString()
-    Log.e(PRINT_HEADER, "The value is: $returnData")
+    println("The value is: $returnData")
     return returnData
 }
 
 fun doGeneric() {
     fun <T> printValue(value: T) {
-        Log.e(PRINT_HEADER, "The value is: $value")
+        println("The value is: $value")
     }
 
     fun printValueWithAny(value: Any) {
-        Log.e(PRINT_HEADER, "The value is: $value")
+        println("The value is: $value")
     }
 
     val stringValue: String = "softAai Apps!"
@@ -64,10 +71,10 @@ fun doGeneric() {
 
     for (element in heterogeneousList) {
         when (element) {
-            is String -> Log.e(PRINT_HEADER, "String: $element")
-            is Int -> Log.e(PRINT_HEADER, "Int: $element")
-            is Boolean -> Log.e(PRINT_HEADER, "Boolean: $element")
-            else -> Log.e(PRINT_HEADER, "Unknown type")
+            is String -> println("String: $element")
+            is Int -> println("Int: $element")
+            is Boolean -> println("Boolean: $element")
+            else -> println("Unknown type")
         }
     }
 }
@@ -76,21 +83,21 @@ fun doEqualsOperator() {
     val s1 = Student("Ramesh")
     val s2 = Student("Ramesh")
 
-    Log.e(PRINT_HEADER, (s1 == s2).toString())    //false
-    Log.e(PRINT_HEADER, (s1 === s2).toString())   //false
+    println((s1 == s2))    //false
+    println((s1 === s2))   //false
 
-    Log.e(PRINT_HEADER, s1.toString())   //Student@36baf30c
-    Log.e(PRINT_HEADER, s2.toString())   //Student@7a81197d
+    println(s1)   //Student@36baf30c
+    println(s2)   //Student@7a81197d
 
     val ss1 = Student1("Ramesh")
     val ss2 = Student1("Ramesh")
-    Log.e(PRINT_HEADER, (ss1 == ss2).toString())    //true
-    Log.e(PRINT_HEADER, (ss1 === ss2).toString())   //false
+    println((ss1 == ss2))    //true
+    println((ss1 === ss2))   //false
 
     val sss1 = Student1("Ramesh")
     val sss2: Student1 = sss1
-    Log.e(PRINT_HEADER, (sss1 == sss2).toString())    //true
-    Log.e(PRINT_HEADER, (sss1 === sss2).toString())   //true
+    println((sss1 == sss2))    //true
+    println((sss1 === sss2))   //true
 }
 
 fun doInfix() {
@@ -103,8 +110,8 @@ fun doInfix() {
     infix fun Number.toPowerOf(s: Number): String {
         return this.toDouble().pow(s.toDouble()).toString()
     }
-    Log.e(PRINT_HEADER, (GFG() square 2).toString())
-    Log.e(PRINT_HEADER, 5 toPowerOf 2)
+    println((GFG() square 2))
+    println(5 toPowerOf 2)
 }
 
 /**
@@ -133,7 +140,7 @@ fun doInline() {
     val inlineResult1 = measureNanoTime {
         5.isAdult()
     }
-    Log.e(PRINT_HEADER, "Result of regular higher-order function: $regularResult")
-    Log.e(PRINT_HEADER, "Result of inline higher-order function: $inlineResult")
-    Log.e(PRINT_HEADER, inlineResult1.toString()) // prints "true"
+    println("Result of regular higher-order function: $regularResult")
+    println("Result of inline higher-order function: $inlineResult")
+    println(inlineResult1) // prints "true"
 }

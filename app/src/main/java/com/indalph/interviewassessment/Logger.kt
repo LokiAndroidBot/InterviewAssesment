@@ -1,5 +1,7 @@
 package com.indalph.interviewassessment
 
-object Logger {
-    const val PRINT_HEADER = "To Print"
+import android.util.Log
+
+fun println(anything: Any?) {
+    Log.e("To Print", anything?.toString() ?: "")
 }

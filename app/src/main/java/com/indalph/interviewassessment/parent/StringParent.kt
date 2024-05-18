@@ -1,27 +1,26 @@
-package com.indalph.interviewassessment
+package com.indalph.interviewassessment.parent
 
-import android.util.Log
-import com.indalph.interviewassessment.Logger.PRINT_HEADER
+import com.indalph.interviewassessment.println
 
 fun doStringReverse() {
 
     //Default method to reverse a string
     val input = "India"
     input.reversed()
-    Log.e(PRINT_HEADER, input.reversed())
+    println(input.reversed())
 
 
     //Default method to reverse a string using list
-    Log.e(PRINT_HEADER, input.toList().asReversed().toString())
+    println(input.toList().asReversed())
 
     //Reverse a string using
     for (i in input.length - 1 downTo 0) {
-        //Log.e(printHeader, input[i].toString())
+        //Log.e(printHeader, input[i])
     }
 
     //Reverse a string using downTo()
     for (i in input.toList().size - 1 downTo 0) {
-        //Log.e(printHeader, input[i].toString())
+        //Log.e(printHeader, input[i])
     }
 
     //Recursion Method with When
@@ -45,8 +44,8 @@ fun doStringReverse() {
             reverseSentenceRecursively(sentence.substring(1)) + sentence[0]
         }
     }
-    Log.e(PRINT_HEADER, recursionString(input))
-    Log.e(PRINT_HEADER, reverseSentenceRecursively(input))
+    println(recursionString(input))
+    println(reverseSentenceRecursively(input))
 
 }
 
@@ -65,10 +64,7 @@ fun doFindRepeatedCharacterOccurrence() {
 
             else -> {
                 if (counter > 2) {
-                    Log.e(
-                        PRINT_HEADER,
-                        "The repeated occurence of the char - $firstOccurence is $counter"
-                    )
+                    println("The repeated occurence of the char - $firstOccurence is $counter")
                     counter = 1
                 }
                 firstOccurence = toCheck

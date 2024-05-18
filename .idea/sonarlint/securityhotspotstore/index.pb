@@ -1,14 +1,8 @@
 
 q
 Aapp/src/main/java/com/indalph/interviewassessment/MainActivity.kt,0/9/09faa29ab9dd1e0bad390d980993744f8213ccfc
-y
-Iapp/src/main/java/com/indalph/interviewassessment/ClassExtensionParent.kt,2/9/2918d69f27fda6e86990f57785bc88cb55efc9a7
 k
 ;app/src/main/java/com/indalph/interviewassessment/Logger.kt,5/1/51f4d770cabc859f04d0ff6c80344496e68aaa96
-z
-Japp/src/main/java/com/indalph/interviewassessment/StringExtensionParent.kt,d/5/d532bf1d98d1f12adbe7119e2c38f76d7e39d26f
-|
-Lapp/src/main/java/com/indalph/interviewassessment/VariableExtensionParent.kt,b/f/bf9672b9a932b667d170b05003db12e45b3f8a38
 k
 ;app/src/main/java/com/indalph/interviewassessment/Person.kt,b/e/bef36ca8c3948495f7c4de3b0907b503f714be49
 @
@@ -44,16 +38,12 @@ C
 settings.gradle.kts,7/4/749edfcc96398253e5b3416184e95c46621da850
 Å
 Q.idea/sonarlint/securityhotspotstore/b/e/bef36ca8c3948495f7c4de3b0907b503f714be49,a/4/a438e4b9e52c3ed1c4c28913e5e65cb9f8c00522
-Å
-Q.idea/sonarlint/securityhotspotstore/b/f/bf9672b9a932b667d170b05003db12e45b3f8a38,7/b/7b7e5af8166f603851cfe35ee3d15d25d5fb8e6f
 w
 G.idea/sonarlint/issuestore/0/7/0712df971a99ac4d2fccb8e0fb19f377f3374cca,4/1/41b281c57948ff2524af98ff9da00edd5725922c
 Å
 Q.idea/sonarlint/securityhotspotstore/d/2/d2a4383452aad84a18429a5844d31330a012a9e6,7/f/7fcac164c7a46b8fc6411ea93226c884af6044db
 r
 Bapp/src/main/java/com/indalph/interviewassessment/ui/theme/Type.kt,a/d/ade403498f860ef1fa0583d986a69abf7569e21b
-Å
-Q.idea/sonarlint/securityhotspotstore/d/5/d532bf1d98d1f12adbe7119e2c38f76d7e39d26f,3/2/32de10e948ac02a7962e78330a6cf9db47c3d58c
 w
 G.idea/sonarlint/issuestore/2/a/2afbb999f001938c88fa43fc2ef52abf0f8213e4,5/1/516e730a14e71f02fa73f3acd6dc7cea9a9fe002
 Å
@@ -92,5 +82,13 @@ Dapp/src/test/java/com/indalph/interviewassessment/ExampleUnitTest.kt,6/9/69940
 Q.idea/sonarlint/securityhotspotstore/0/7/0712df971a99ac4d2fccb8e0fb19f377f3374cca,2/e/2e86fb07c772c8a1f877dd80522b653bbbb01e65
 Å
 Q.idea/sonarlint/securityhotspotstore/0/9/09faa29ab9dd1e0bad390d980993744f8213ccfc,2/7/2701659a0c9afad328ce0bf9a24926cae1e73a1e
-Å
-Q.idea/sonarlint/securityhotspotstore/2/9/2918d69f27fda6e86990f57785bc88cb55efc9a7,2/8/28b6ca7468e1fe88926e8af20374c3cb4b48a0d7
+w
+Gapp/src/main/java/com/indalph/interviewassessment/parent/BasicParent.kt,1/2/1280da153b11f7ce90af44a3a7a17da57fbe8b98
+w
+Gapp/src/main/java/com/indalph/interviewassessment/parent/ClassParent.kt,0/9/093adcfd2e56a850d416e2b0a8fe2c7b41bbd742
+x
+Happ/src/main/java/com/indalph/interviewassessment/parent/StringParent.kt,3/b/3b61ab55daab269e2a3cd019710083618f399d39
+z
+Japp/src/main/java/com/indalph/interviewassessment/parent/FunctionParent.kt,e/2/e240dc0cd81e7b064cd024cfb8ea378a7462dadd
+z
+Japp/src/main/java/com/indalph/interviewassessment/parent/VariableParent.kt,4/3/43cbca96da402c4d1716402168cb390db3c83a81

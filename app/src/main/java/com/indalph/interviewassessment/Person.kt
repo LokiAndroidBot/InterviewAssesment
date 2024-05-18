@@ -1,7 +1,5 @@
 package com.indalph.interviewassessment
 
-import android.util.Log
-import com.indalph.interviewassessment.Logger.PRINT_HEADER
 import java.time.LocalDate
 
 
@@ -12,20 +10,20 @@ class Person(val _name: String) {
 
     // Initializer Blocks
     init {
-        Log.e(PRINT_HEADER, "This is first init block")
+        println("This is first init block")
     }
 
     init {
-        Log.e(PRINT_HEADER, "This is second init block")
+        println("This is second init block")
     }
 
     init {
-        Log.e(PRINT_HEADER, "This is third init block")
+        println("This is third init block")
     }
 
     init {
         this.name = _name
-        Log.e(PRINT_HEADER, "Name = $name")
+        println("Name = $name")
     }
 }
 
@@ -86,9 +84,7 @@ class Outer {
 
     fun printOuter() {
         this.javaClass.enclosingMethod?.let {
-            Log.e(
-                PRINT_HEADER, it.name
-            )
+            println(it.name)
         }
     }
 
@@ -122,7 +118,7 @@ class Outer2 {
 
     inner class InnerClass {
         fun printSomething() {
-            Log.e(PRINT_HEADER, companySecret)
+            println(companySecret)
         }
     }
 }
