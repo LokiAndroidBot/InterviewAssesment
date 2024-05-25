@@ -1,5 +1,6 @@
 package com.indalph.interviewassessment.parent
 
+import android.annotation.SuppressLint
 import com.indalph.interviewassessment.CardType
 import com.indalph.interviewassessment.CardTypeNew
 import com.indalph.interviewassessment.CardTypeNew1
@@ -19,24 +20,29 @@ fun doInitBlock() {
     val person = Person("Loki")
 }
 
-fun doDataClass() {
+@SuppressLint("NewApi")
+fun doDataClass(): String {
     val p1 = PersonV2("Amanda", "Smith").also { it.dateOfBirth = LocalDate.of(1992, 8, 8) }
     val p2 = PersonV2("Amanda", "Smith").also { it.dateOfBirth = LocalDate.of(1976, 11, 18) }
     println((p1 == p2))
+    return "https://pl.kotl.in/Ep4TafbaZ"
 }
 
-fun doEnumClass() {
+fun doEnumClass(): String {
     println(CardType.SILVER)
     println(CardTypeNew.SILVER.color)
     println(CardTypeNew1.SILVER.calculateCashbackPercent())
+    return "https://pl.kotl.in/H5iBqvJ1F"
 }
 
-fun doNestedClass() {
+fun doNestedClass(): String {
     println(Outer.NestedClass().printSomething())
+    return "https://pl.kotl.in/6Ec2atR1a"
 }
 
-fun doInnerClass() {
+fun doInnerClass(): String {
     println(Outer2().InnerClass().printSomething().toString())
+    return "https://pl.kotl.in/qzizsXcCL"
 }
 
 fun doSingletonClass() {

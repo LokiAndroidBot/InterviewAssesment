@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+
+    //GMS_SERVICES
+    alias(libs.plugins.gms.services)
 }
 
 android {
@@ -71,4 +74,11 @@ dependencies {
 
     implementation(libs.kotlinReflect)
     implementation(libs.kotlinJDK)
+
+    //GMS_SERVICES
+    implementation(platform(libs.gms.bom))
+    implementation(libs.gms.analytics)
+    implementation(libs.gms.realtime.db)
+
+    implementation(libs.gson)
 }

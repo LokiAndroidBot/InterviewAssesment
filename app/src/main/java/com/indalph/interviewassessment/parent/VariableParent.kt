@@ -190,32 +190,28 @@ fun doMutableImmutableList(): String {
     return "https://pl.kotl.in/RcLOyTYO1"
 }
 
-fun doAnyType(): Any {
-    var a: Any
-    var b: Any
-    for (i in 1..2) {
-        when (i) {
-            1 -> {
-                a = "Loki"
-                println(a)
-            }
+/**
+ * Function to demonstrate returning different types and random behavior.
+ *
+ * @return A sample URL as a String.
+ */
+fun doAnyType(): String {
+    val a: String = "Loki"
+    val b: Int = 1993
 
-            2 -> {
-                b = 1993.2020
-                println(b.toString())
-            }
-        }
-    }
-    when (Random.nextInt(1, 10) / 2) {
-        0 -> {
-            println("The return type is string -> Loki")
-            println("Loki")
-        }
+    // Print values based on iteration
+    println(a)
+    println(b.toString())
 
-        else -> {
-            println("The return type is Int -> 1993")
-            println(1993)
-        }
+    // Randomly determine the return type message
+    val result = if (Random.nextInt(1, 10) / 2 == 0) {
+        println("The return type is string -> Loki")
+        a
+    } else {
+        println("The return type is Int -> 1993")
+        b
     }
+
+    println(result)
     return "https://pl.kotl.in/n__PJUt4q"
 }
