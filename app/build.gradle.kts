@@ -81,4 +81,9 @@ dependencies {
     implementation(libs.gms.realtime.db)
 
     implementation(libs.gson)
+
+    //Coroutines
+    implementation(libs.coroutinesCore)
+    implementation(libs.coroutinesAndroid)
+    implementation(libs.androidx.compose.lifecycle)
 }

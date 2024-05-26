@@ -13,11 +13,13 @@ kotlinJdk = "1.9.24"
 kotlinReflect = "1.9.24"
 material3Android = "1.2.1"
 constraintlayout = "2.1.4"
+compose_lifecycle = "1.0.0-alpha07"
 
 gms_services = "4.4.1"
 gms_bom = "33.0.0"
 composePreviewRenderer = "0.0.1-alpha01"
 gson = "2.8.9"
+coroutines = "1.5.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,13 +43,19 @@ kotlinJDK = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", versi
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
+androidx-compose-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "compose_lifecycle" }
+
 #GMS_SERVICES
 gms_bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "gms_bom" }
-gms_analytics = { group = "com.google.firebase", name = "firebase-analytics"}
-gms_realtime_db = { group = "com.google.firebase", name = "firebase-database"}
+gms_analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+gms_realtime_db = { group = "com.google.firebase", name = "firebase-database" }
 
 compose-preview-renderer = { group = "com.android.tools.compose", name = "compose-preview-renderer", version.ref = "composePreviewRenderer" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+
+#Coroutines
+coroutinesCore = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutinesAndroid = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 
 
 [plugins]

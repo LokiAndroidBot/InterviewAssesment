@@ -19,3 +19,19 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+
+# Keep the User class and its no-argument constructor
+-keepclassmembers class com.indalph.interviewassessment.* {
+    public <init>();
+}
+
+# Keep all fields of the User class
+-keepclassmembers class com.indalph.interviewassessment.* {
+    <fields>;
+}
+
+# Keep all methods of the User class
+-keepclassmembers class com.indalph.interviewassessment.* {
+    <methods>;
+}

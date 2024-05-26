@@ -96,3 +96,9 @@ H
 app/google-services.json,f/d/fd8d34b142d02ec743a8efefefd2c097961666e9
 r
 Bapp/src/main/java/com/indalph/interviewassessment/MyApplication.kt,b/2/b2dd328916062a2eb21a3ef245c35ec7b38502c6
+m
+=app/src/main/java/com/indalph/interviewassessment/Response.kt,d/a/da213984aa8a4b01317d704b54544744666087c5
+r
+Bapp/src/main/java/com/indalph/interviewassessment/MainViewModel.kt,b/b/bb04be32920b111aa8cc97749dae6d095de26f4b
+o
+?app/src/main/java/com/indalph/interviewassessment/MainIntent.kt,2/5/254d2dc314f8b5f3555bab60ab865e8c00e3803a

@@ -2,7 +2,6 @@ package com.indalph.interviewassessment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -18,9 +17,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -33,12 +34,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.Logger
-import com.google.firebase.database.ValueEventListener
-import com.google.gson.Gson
 import com.indalph.interviewassessment.parent.dataTypeSize
 import com.indalph.interviewassessment.parent.doAnyType
 import com.indalph.interviewassessment.parent.doBy
@@ -63,6 +61,10 @@ import com.indalph.interviewassessment.parent.doPublicVisibility
 import com.indalph.interviewassessment.parent.doSafeCall
 import com.indalph.interviewassessment.parent.doVariableType
 import com.indalph.interviewassessment.ui.theme.InterviewAssessmentTheme
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlin.reflect.full.memberProperties
 
 
 class MainActivity : ComponentActivity() {
@@ -71,13 +73,49 @@ class MainActivity : ComponentActivity() {
         FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG)
         enableEdgeToEdge()
         setContent {
-            InterviewAssessmentTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ExpandableList(
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+            val viewModel: MainViewModel = viewModel()
+            val state by viewModel.state.collectAsState()
+
+            LaunchedEffect(Unit) {
+                viewModel.intents.send(MainIntent.LoadData)
             }
+
+            MainScreen(state, viewModel)
+        }
+    }
+}
+
+@Composable
+fun MainScreen(state: MainState, mainViewModel: MainViewModel) {
+    when (state) {
+        is MainState.Idle -> {
+            Text("Idle")
+        }
+
+        is MainState.Loading -> {
+            Column(
+                modifier = Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator()
+            }
+
+        }
+
+        is MainState.Data -> {
+            ExpandableList(state.response, mainViewModel)
+        }
+
+        is MainState.Error -> {
+            Text("Error: ${state.error}")
+        }
+
+        is MainState.CHILD -> {
+            Column(
+                modifier = Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally
+            ) {
+                ExpandableList(state.response)
+            }
+
         }
     }
 }
@@ -153,37 +191,45 @@ fun child(): List<Data> {
 
 }
 
-data class User(var name: String, var code: String)
-
 @Composable
-fun ExpandableList(modifier: Modifier) {
-    val database =
-        FirebaseDatabase.getInstance("https://interviewassessment-21335-default-rtdb.asia-southeast1.firebasedatabase.app")
-    val myRef = database.getReference("data")
-    Log.e("Error", myRef.parent.toString())
-    myRef.addListenerForSingleValueEvent(object : ValueEventListener {
-        override fun onDataChange(dataSnapshot: DataSnapshot) {
-            val userList: MutableList<User?> = ArrayList()
-            for (userSnapshot in dataSnapshot.children) {
-                val user: User? = userSnapshot.getValue(User::class.java)
-                userList.add(user)
+fun ExpandableList(response: List<String>) {
+    var selectedURL by remember { mutableStateOf("") }
+    Column(modifier = Modifier) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .weight(1f)
+                .padding(top = 20.dp, bottom = 20.dp)
+        ) {
+            response.forEach { parent ->
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        selectedURL = parent
+                    }) {
+                    Text(text = parent, fontSize = 20.sp, modifier = Modifier
+                        .clickable {
+                        }
+                        .padding(8.dp))
+                }
             }
 
-            // Now userList contains all users
-            for (user in userList) {
-                Log.e("TAG", "User name: " + (user?.name ?: ""))
-                Log.e("TAG", "User email: " + (user?.code ?: ""))
-            }
         }
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .padding(top = 20.dp, bottom = 20.dp)
 
-        override fun onCancelled(databaseError: DatabaseError) {
-            Log.e("TAG", "loadUsers:onCancelled", databaseError.toException())
+        ) {
+            WebViewExample(selectedURL)
         }
-    })
+    }
+}
 
-    val parentItems = remember { getParent() }
-    val childItems = remember { child() }
-    Log.e("Child Items", Gson().toJson(childItems))
+@OptIn(DelicateCoroutinesApi::class)
+@Composable
+fun ExpandableList(response: Response, viewModel: MainViewModel) {
+
     val expandedState = remember { mutableStateMapOf<String, Boolean>() }
     var selectedURL by remember { mutableStateOf("") }
     Column(modifier = Modifier) {
@@ -194,7 +240,7 @@ fun ExpandableList(modifier: Modifier) {
                 .padding(top = 20.dp, bottom = 20.dp)
 
         ) {
-            parentItems.forEach { parent ->
+            response.parent.forEach { parent ->
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
@@ -211,7 +257,9 @@ fun ExpandableList(modifier: Modifier) {
                         .padding(16.dp))
                     val isExpanded = expandedState[parent] ?: false
                     if (isExpanded) {
-                        val children = childItems.filter { it.parent == parent }
+                        val children = (getProperty(
+                            response, parent
+                        ) as? Collection<*>)?.filterIsInstance<Item>() ?: emptyList()
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -221,7 +269,13 @@ fun ExpandableList(modifier: Modifier) {
                                 Box(modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable {
-                                        selectedURL = child.function.invoke()
+                                        GlobalScope.launch {
+                                            viewModel.intents.send(
+                                                MainIntent.LoadChildData(
+                                                    child.refList
+                                                )
+                                            )
+                                        }
                                     }) {
                                     Text(
                                         text = child.message,
@@ -243,6 +297,14 @@ fun ExpandableList(modifier: Modifier) {
             WebViewExample(selectedURL)
         }
     }
+}
+
+fun <T : Any> getProperty(instance: T, propertyName: String): Any? {
+    return instance::class.memberProperties.firstOrNull {
+        it.name.equals(
+            propertyName, ignoreCase = true
+        )
+    }?.getter?.call(instance)
 }
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -268,6 +330,6 @@ fun WebViewExample(url: String) {
 @Composable
 fun GreetingPreview() {
     InterviewAssessmentTheme {
-        ExpandableList(modifier = Modifier.fillMaxSize())
+        //ExpandableList(response = Response())
     }
 }
