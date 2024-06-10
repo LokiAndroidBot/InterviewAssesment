@@ -30,14 +30,9 @@ class MainViewModel : ViewModel() {
             intents.consumeAsFlow().collect {
                 when (it) {
                     is MainIntent.LoadData -> fetchData()
-                    is MainIntent.LoadChildData -> fetchChildData(it.childItem)
                 }
             }
         }
-    }
-
-    private fun fetchChildData(childItem: List<String>) {
-        _state.value = MainState.CHILD(childItem)
     }
 
     private fun fetchData() {

@@ -86,4 +86,13 @@ dependencies {
     implementation(libs.coroutinesCore)
     implementation(libs.coroutinesAndroid)
     implementation(libs.androidx.compose.lifecycle)
+
+
+    implementation(libs.androidx.navigation)
+    implementation(libs.androidx.json)
+
+
+
+
+
 }

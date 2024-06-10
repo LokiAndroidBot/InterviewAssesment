@@ -19,15 +19,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -35,14 +35,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.Logger
 import com.indalph.interviewassessment.ui.theme.InterviewAssessmentTheme
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.net.URLDecoder
+import java.net.URLEncoder
 import kotlin.reflect.full.memberProperties
-
 
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
@@ -52,58 +60,69 @@ class MainActivity : ComponentActivity() {
         FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG)
         enableEdgeToEdge()
         setContent {
+            val navController = rememberNavController()
             val state by viewModel.state.collectAsState()
 
             LaunchedEffect(Unit) {
                 viewModel.intents.send(MainIntent.LoadData)
             }
 
-            MainScreen(state, viewModel)
+            NavHost(navController = navController, startDestination = "main") {
+                composable("main") {
+                    MainScreen(state, viewModel, navController)
+                }
+                composable(
+                    "details/{url}",
+                    arguments = listOf(navArgument("url") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val urlListJson = backStackEntry.arguments?.getString("url") ?: ""
+                    val urlList = Json.decodeFromString<List<String>>(urlListJson)
+                    DetailScreen(urlList, viewModel, navController)
+                }
+                composable(
+                    "detailScreen/{url}",
+                    arguments = listOf(navArgument("url") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val url = backStackEntry.arguments?.getString("url") ?: ""
+                    WebViewExample(url)
+                }
+            }
         }
-    }
-
-}
-
-@Composable
-fun MainScreen(state: MainState, mainViewModel: MainViewModel) = when (state) {
-    is MainState.Idle -> {
-        Text("Idle")
-    }
-
-    is MainState.Loading -> {
-        Column(
-            modifier = Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally
-        ) {
-            CircularProgressIndicator()
-        }
-
-    }
-
-    is MainState.Data -> {
-        ExpandableList(state.response, mainViewModel)
-    }
-
-    is MainState.Error -> {
-        Text("Error: ${state.error}")
-    }
-
-    is MainState.CHILD -> {
-        Column(
-            modifier = Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally
-        ) {
-            ExpandableList(state.response)
-        }
-
     }
 }
 
 @Composable
-fun ExpandableList(response: List<String>) {
-    var selectedURL by remember { mutableStateOf("") }
+fun MainScreen(state: MainState, mainViewModel: MainViewModel, navController: NavHostController) {
+    when (state) {
+        is MainState.Idle -> {
+            Text("Idle")
+        }
+
+        is MainState.Loading -> {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+
+        is MainState.Data -> {
+            ExpandableList(state.response, mainViewModel, navController)
+        }
+
+        is MainState.Error -> {
+            Text("Error: ${state.error}")
+        }
+    }
+}
+
+@Composable
+fun ExpandableList(response: List<String>, navController: NavHostController) {
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         Column(
             modifier = Modifier
-
                 .weight(0.3f)
                 .padding(top = 20.dp, bottom = 20.dp)
         ) {
@@ -111,103 +130,87 @@ fun ExpandableList(response: List<String>) {
                 Box(modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        selectedURL = parent
+                        navController.navigate("details/$parent")
                     }) {
                     Text(text = parent, fontSize = 20.sp, modifier = Modifier.padding(8.dp))
                 }
             }
-
-        }
-        Box(
-            modifier = Modifier
-                .weight(0.7f)
-                .padding(top = 20.dp, bottom = 20.dp)
-
-        ) {
-            WebViewExample(selectedURL)
         }
     }
 }
 
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
-fun ExpandableList(response: Response, viewModel: MainViewModel) {
-
+fun ExpandableList(response: Response, viewModel: MainViewModel, navController: NavHostController) {
     val expandedState = remember { mutableStateMapOf<String, Boolean>() }
-    var selectedURL by remember { mutableStateOf("") }
-    Column(modifier = Modifier) {
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .weight(1f)
-                .padding(top = 20.dp, bottom = 20.dp)
-
-        ) {
-            response.parent.forEach { parent ->
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = parent, fontSize = 20.sp, modifier = Modifier
-                        .clickable {
-                            expandedState[parent] = !(expandedState[parent] ?: false)
-                            // Close all other parent children
-                            expandedState.keys
-                                .filter { it != parent }
-                                .forEach { expandedState[it] = false }
-                        }
-                        .padding(16.dp))
-                    val isExpanded = expandedState[parent] ?: false
-                    if (isExpanded) {
-                        val children = (getProperty(
-                            response, parent
-                        ) as? Collection<*>)?.filterIsInstance<Item>() ?: emptyList()
-                        Column(
-                            modifier = Modifier
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+        response.parent.forEach { parent ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = parent, fontSize = 20.sp, modifier = Modifier
+                    .clickable {
+                        expandedState[parent] = !(expandedState[parent] ?: false)
+                        expandedState.keys
+                            .filter { it != parent }
+                            .forEach { expandedState[it] = false }
+                    }
+                    .padding(16.dp))
+                val isExpanded = expandedState[parent] ?: false
+                if (isExpanded) {
+                    val children =
+                        (getProperty(response, parent) as? Collection<*>)?.filterIsInstance<Item>()
+                            ?: emptyList()
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 32.dp)
+                    ) {
+                        children.forEach { child ->
+                            Box(modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 32.dp)
-                        ) {
-                            children.forEach { child ->
-                                Box(modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        GlobalScope.launch {
-                                            viewModel.intents.send(
-                                                MainIntent.LoadChildData(
-                                                    child.refList
-                                                )
-                                            )
-                                        }
-                                    }) {
-                                    Text(
-                                        text = child.message,
-                                        modifier = Modifier.padding(vertical = 4.dp)
-                                    )
-                                }
+                                .clickable {
+                                    val urlListJson = Json.encodeToString(child.refList)
+                                    val encodedUrlListJson = URLEncoder.encode(urlListJson, "UTF-8")
+                                    navController.navigate("details/${encodedUrlListJson}")
+                                }) {
+                                Text(
+                                    text = child.message,
+                                    modifier = Modifier.padding(vertical = 4.dp)
+                                )
                             }
                         }
                     }
                 }
             }
         }
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .padding(top = 20.dp, bottom = 20.dp)
-
-        ) {
-            WebViewExample(selectedURL)
-        }
     }
 }
 
-fun <T : Any> getProperty(instance: T, propertyName: String): Any? {
-    return instance::class.memberProperties.firstOrNull {
-        it.name.equals(
-            propertyName, ignoreCase = true
-        )
-    }?.getter?.call(instance)
+@Composable
+fun WebView(url: String) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        WebViewExample(url)
+    }
+}
+
+@Composable
+fun DetailScreen(
+    urlList: List<String>,
+    viewModel: MainViewModel,
+    navController: NavHostController,
+) {
+    Column {
+        Text("Details Screen")
+        urlList.forEach { url ->
+            Text(modifier = Modifier.clickable {
+                val encodedUrlListJson = URLEncoder.encode(url, "UTF-8")
+                navController.navigate("detailScreen/${encodedUrlListJson}")
+            }, text = url)
+        }
+    }
 }
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -227,6 +230,12 @@ fun WebViewExample(url: String) {
     AndroidView({ webView }) {
         it.loadUrl(url)
     }
+}
+
+fun <T : Any> getProperty(instance: T, propertyName: String): Any? {
+    return instance::class.memberProperties.firstOrNull {
+        it.name.equals(propertyName, ignoreCase = true)
+    }?.getter?.call(instance)
 }
 
 
