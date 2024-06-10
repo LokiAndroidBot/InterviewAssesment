@@ -19,9 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -44,11 +42,9 @@ import androidx.navigation.navArgument
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.Logger
 import com.indalph.interviewassessment.ui.theme.InterviewAssessmentTheme
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import java.net.URLDecoder
 import java.net.URLEncoder
 import kotlin.reflect.full.memberProperties
 
@@ -119,28 +115,6 @@ fun MainScreen(state: MainState, mainViewModel: MainViewModel, navController: Na
 }
 
 @Composable
-fun ExpandableList(response: List<String>, navController: NavHostController) {
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        Column(
-            modifier = Modifier
-                .weight(0.3f)
-                .padding(top = 20.dp, bottom = 20.dp)
-        ) {
-            response.forEach { parent ->
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        navController.navigate("details/$parent")
-                    }) {
-                    Text(text = parent, fontSize = 20.sp, modifier = Modifier.padding(8.dp))
-                }
-            }
-        }
-    }
-}
-
-@OptIn(DelicateCoroutinesApi::class)
-@Composable
 fun ExpandableList(response: Response, viewModel: MainViewModel, navController: NavHostController) {
     val expandedState = remember { mutableStateMapOf<String, Boolean>() }
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
@@ -186,13 +160,6 @@ fun ExpandableList(response: Response, viewModel: MainViewModel, navController: 
                 }
             }
         }
-    }
-}
-
-@Composable
-fun WebView(url: String) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        WebViewExample(url)
     }
 }
 
